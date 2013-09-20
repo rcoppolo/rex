@@ -12,6 +12,10 @@ defmodule Rex.Resource do
         Rex.Server.get(bucket, key)
       end
 
+      def delete(key) do
+        Rex.Server.delete(bucket, key)
+      end
+
       def bucket do
         atom_to_binary(__MODULE__) |> String.split(".") |> List.last
       end

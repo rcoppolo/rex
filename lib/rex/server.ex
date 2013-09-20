@@ -18,6 +18,10 @@ defmodule Rex.Server do
     :gen_server.call(__MODULE__, {:get, bucket, key})
   end
 
+  def delete(bucket, key) do
+    :gen_server.call(__MODULE__, {:delete, bucket, key})
+  end
+
   def init([]) do
     {:ok, config} = :application.get_env(:rex, :dev)
     {:ok, pid} = :riakc_pb_socket.start_link(config[:host], config[:port])
@@ -36,8 +40,15 @@ defmodule Rex.Server do
   end
 
   def handle_call({:get, bucket, key}, _from, pid) do
-    {:ok, obj} = :riakc_pb_socket.get(pid, bucket, key)
-    resp = :riakc_obj.get_value(obj)
+    case :riakc_pb_socket.get(pid, bucket, key) do
+      {:ok, obj} -> resp = :riakc_obj.get_value(obj)
+      {:error, :notfound} -> resp = {:error, :notfound}
+    end
+    {:reply, resp, pid}
+  end
+
+  def handle_call({:delete, bucket, key}, _from, pid) do
+    resp = :riakc_pb_socket.delete(pid, bucket, key)
     {:reply, resp, pid}
   end
 
