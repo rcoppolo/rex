@@ -16,7 +16,14 @@ defmodule Rex.Mixfile do
     [
       registered: [:rex],
       mod: { Rex, [] },
-      env: [dev: [port: 10017, host: '172.17.42.1']],
+      env: [
+        riak: [
+          size: 5,
+          max_overflow: 10,
+          host: '172.17.42.1',
+          port: 10017
+        ]
+      ],
     ]
   end
 

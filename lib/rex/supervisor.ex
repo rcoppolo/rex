@@ -1,4 +1,5 @@
 defmodule Rex.Supervisor do
+
   use Supervisor.Behaviour
 
   def start_link() do
@@ -6,9 +7,8 @@ defmodule Rex.Supervisor do
   end
 
   def init([]) do
-    children = [
-      worker(Rex.Server, [])
-    ]
-    supervise(children, strategy: :one_for_one)
+    tree = [ worker(Rex.Server, []) ]
+    supervise(tree, strategy: :one_for_all)
   end
+
 end

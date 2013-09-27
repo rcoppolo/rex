@@ -23,33 +23,26 @@ defmodule Rex.Server do
   end
 
   def init([]) do
-    {:ok, config} = :application.get_env(:rex, :dev)
-    {:ok, pid} = :riakc_pb_socket.start_link(config[:host], config[:port])
-    {:ok, pid}
+    {:ok, config} = :application.get_env(:rex, :riak)
+    poolargs = [
+      name: {:local, :riak},
+      worker_module: Rex.Worker,
+      size: config[:size],
+      max_overflow: config[:max_overflow]
+    ]
+    workerargs = [
+      port: config[:port],
+      host: config[:host]
+    ]
+    :poolboy.start_link(poolargs, workerargs)
+    {:ok, []}
   end
 
-  def handle_call(:ping, _from, pid) do
-    resp = :riakc_pb_socket.ping(pid)
-    {:reply, resp, pid}
-  end
-
-  def handle_call({:put, bucket, key, value}, _from, pid) do
-    obj = :riakc_obj.new(bucket, key, value)
-    resp = :riakc_pb_socket.put(pid, obj)
-    {:reply, resp, pid}
-  end
-
-  def handle_call({:get, bucket, key}, _from, pid) do
-    case :riakc_pb_socket.get(pid, bucket, key) do
-      {:ok, obj} -> resp = :riakc_obj.get_value(obj)
-      {:error, :notfound} -> resp = {:error, :notfound}
-    end
-    {:reply, resp, pid}
-  end
-
-  def handle_call({:delete, bucket, key}, _from, pid) do
-    resp = :riakc_pb_socket.delete(pid, bucket, key)
-    {:reply, resp, pid}
+  def handle_call(query, _from, _pid) do
+     res = :poolboy.transaction(:riak, fn(worker) ->
+       :gen_server.call(worker, query)
+     end)
+     { :reply, res, [] }
   end
 
 end
