@@ -5,7 +5,7 @@ defmodule Rex.Mixfile do
   def project do
     [
       app: :rex,
-      version: "0.0.1",
+      version: "0.0.2",
       elixir: "~> 0.10.3-dev",
       deps: deps
     ]

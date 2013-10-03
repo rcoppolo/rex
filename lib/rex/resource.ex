@@ -8,8 +8,8 @@ defmodule Rex.Resource do
         Rex.Server.ping()
       end
 
-      def put(key, value) do
-        Rex.Server.put(bucket, key, value)
+      def put(key, value, options // []) do
+        Rex.Server.put(bucket, key, value, options)
       end
 
       def get(key) do
@@ -18,6 +18,14 @@ defmodule Rex.Resource do
 
       def delete(key) do
         Rex.Server.delete(bucket, key)
+      end
+
+      def search(query) do
+        Rex.Server.search(bucket, query)
+      end
+
+      def get_index(index, query) do
+        Rex.Server.get_index(bucket, index, query)
       end
 
       def bucket do

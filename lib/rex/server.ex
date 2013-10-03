@@ -10,16 +10,24 @@ defmodule Rex.Server do
     :gen_server.call(__MODULE__, :ping)
   end
 
-  def put(bucket, key, value) do
-    :gen_server.call(__MODULE__, {:put, bucket, key, value})
+  def put(bucket, key, value, options) do
+    :gen_server.call(__MODULE__, {:put, bucket, key, value, options})
   end
 
   def get(bucket, key) do
     :gen_server.call(__MODULE__, {:get, bucket, key})
   end
 
+  def get_index(bucket, index, query) do
+    :gen_server.call(__MODULE__, {:get_index, bucket, index, query})
+  end
+
   def delete(bucket, key) do
     :gen_server.call(__MODULE__, {:delete, bucket, key})
+  end
+
+  def search(bucket, query) do
+    :gen_server.call(__MODULE__, {:search, bucket, query})
   end
 
   def init([]) do
