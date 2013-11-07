@@ -17,7 +17,7 @@ defmodule Rex.Worker do
   end
 
   def handle_call({:put, bucket, key, value, options}, _from, pid) do
-    obj = :riakc_obj.new(bucket, key, value)
+    obj = :riakc_obj.new(bucket, key, value, "application/x-erlang")
     obj = set_secondary_indexes(obj, options)
     res = :riakc_pb_socket.put(pid, obj)
     {:reply, res, pid}
