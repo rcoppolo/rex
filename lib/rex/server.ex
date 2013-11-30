@@ -10,7 +10,7 @@ defmodule Rex.Server do
     :gen_server.call(__MODULE__, :ping)
   end
 
-  def put(bucket, key, value, options) do
+  def put(bucket, key, value, options // []) do
     :gen_server.call(__MODULE__, {:put, bucket, key, value, options})
   end
 
