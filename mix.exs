@@ -14,7 +14,7 @@ defmodule Rex.Mixfile do
   # Configuration for the OTP application
   def application do
     [
-      registered: [:rex],
+      registered: [ :rex ],
       mod: { Rex, [] },
       env: [
         riak: [
@@ -28,10 +28,8 @@ defmodule Rex.Mixfile do
   end
 
   defp deps do
-    [
-      { :poolboy, github: "devinus/poolboy" },
-      { :riak_erlang_client, github: "basho/riak-erlang-client", app: false }
-    ]
+    [ { :poolboy, github: "devinus/poolboy" },
+      { :riak_erlang_client, github: "basho/riak-erlang-client", app: false } ]
   end
 
 end

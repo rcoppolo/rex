@@ -3,31 +3,7 @@ defmodule Rex.Server do
   use GenServer.Behaviour
 
   def start_link() do
-    :gen_server.start_link({:local, __MODULE__}, __MODULE__, [], [])
-  end
-
-  def ping() do
-    :gen_server.call(__MODULE__, :ping)
-  end
-
-  def put(bucket, key, value, options // []) do
-    :gen_server.call(__MODULE__, {:put, bucket, key, value, options})
-  end
-
-  def get(bucket, key) do
-    :gen_server.call(__MODULE__, {:get, bucket, key})
-  end
-
-  def get_index(bucket, index, query) do
-    :gen_server.call(__MODULE__, {:get_index, bucket, index, query})
-  end
-
-  def delete(bucket, key) do
-    :gen_server.call(__MODULE__, {:delete, bucket, key})
-  end
-
-  def search(bucket, query) do
-    :gen_server.call(__MODULE__, {:search, bucket, query})
+    :gen_server.start_link({:local, :rex_server}, __MODULE__, [], [])
   end
 
   def init([]) do
@@ -51,6 +27,39 @@ defmodule Rex.Server do
        :gen_server.call(worker, query)
      end)
      { :reply, res, [] }
+  end
+
+  # interface
+  defmacro __using__(_) do
+
+    quote do
+
+      def ping() do
+        :gen_server.call(:rex_server, :ping)
+      end
+
+      def put(bucket, key, value, options // []) do
+        :gen_server.call(:rex_server, {:put, bucket, key, value, options})
+      end
+
+      def get(bucket, key) do
+        :gen_server.call(:rex_server, {:get, bucket, key})
+      end
+
+      def get_index(bucket, index, query) do
+        :gen_server.call(:rex_server, {:get_index, bucket, index, query})
+      end
+
+      def delete(bucket, key) do
+        :gen_server.call(:rex_server, {:delete, bucket, key})
+      end
+
+      def search(bucket, query) do
+        :gen_server.call(:rex_server, {:search, bucket, query})
+      end
+
+    end
+
   end
 
 end
