@@ -38,25 +38,34 @@ defmodule Rex.Server do
         :gen_server.call(:rex_server, :ping)
       end
 
-      def put(bucket, key, value, options // []) do
-        :gen_server.call(:rex_server, {:put, bucket, key, value, options})
+      def put(object = Rex.Object[key: nil]) do
+        object = object.key :undefined
+        :gen_server.call(:rex_server, {:put, object})
+      end
+
+      def put(object = Rex.Object[]) do
+        :gen_server.call(:rex_server, {:put, object})
+      end
+
+      def put(_) do
+        raise "That isn't a Rex.Object"
       end
 
       def get(bucket, key) do
         :gen_server.call(:rex_server, {:get, bucket, key})
       end
 
-      def get_index(bucket, index, query) do
-        :gen_server.call(:rex_server, {:get_index, bucket, index, query})
-      end
+      # def get_index(bucket, index, query) do
+      #   :gen_server.call(:rex_server, {:get_index, bucket, index, query})
+      # end
 
-      def delete(bucket, key) do
-        :gen_server.call(:rex_server, {:delete, bucket, key})
-      end
+      # def delete(bucket, key) do
+      #   :gen_server.call(:rex_server, {:delete, bucket, key})
+      # end
 
-      def search(bucket, query) do
-        :gen_server.call(:rex_server, {:search, bucket, query})
-      end
+      # def search(bucket, query) do
+      #   :gen_server.call(:rex_server, {:search, bucket, query})
+      # end
 
     end
 

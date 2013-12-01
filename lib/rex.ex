@@ -1,5 +1,6 @@
 defmodule Rex do
   use Application.Behaviour
+
   use Rex.Server
 
   # See http://elixir-lang.org/docs/stable/Application.Behaviour.html
